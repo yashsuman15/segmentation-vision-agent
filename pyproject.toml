@@ -1,0 +1,15 @@
+[project]
+name = "seg-vision-agent"
+version = "0.1.0"
+description = "This is a vision agent that take natural language as input to detect object coordinate and then uses SAM model to segment the target object based on provided coordinate of object"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "gradio>=5.29.0",
+    "matplotlib>=3.10.3",
+    "opencv-python>=4.11.0.86",
+    "pillow>=11.2.1",
+    "plotly>=6.0.1",
+    "torch>=2.7.0",
+    "transformers>=4.51.3",
+]
