@@ -61,13 +61,19 @@ This project provides a modular, extensible framework for vision-based object de
 ---
 ## Project Structure
 
-vision_agent/
+seg-vision-agent/
 ├── __init__.py
+
 ├── data_structures.py       # BoundingBox, DetectionResult
+
 ├── plot_utils.py            # annotate, plot_detections, plot_detections_plotly, etc.
+
 ├── mask_utils.py            # mask_to_polygon, polygon_to_mask, refine_masks
+
 ├── io_utils.py              # load_image, get_boxes
+
 ├── grounded_sam.py          # detect, segment
+
 └── main.py                  # entry point for your application
 
 ---
@@ -78,10 +84,10 @@ Below is a visual representation of how our image segmentation system works:
 
 ```mermaid
 flowchart TD
-    A[User] -->|Uploads image & \nprovides object names| B[Input Processing]
-    B --> C[Object Detection \nusing Grounded DINO]
-    C -->|Detected boxes \n& labels| D[Object Segmentation \nusing SAM]
-    D -->|Segmentation masks| E{Visualization \nChoice}
+    A[User] -->|Uploads image & provides object names| B[Input Processing]
+    B --> C[Object Detection using Grounded DINO]
+    C -->|Detected boxes & labels| D[Object Segmentation nusing SAM]
+    D -->|Segmentation masks| E{Visualization Choice}
     E -->|Option 1| F[Annotated Outlines/Boxes]
     E -->|Option 2| G[Mask-only Overlay]
     F --> H[Result Display]
@@ -99,3 +105,13 @@ flowchart TD
     class C,D models
     class E choice
     class F,G output
+```
+
+---
+## Project Structure
+
+The project is organized into modular Python files with clear separation of concerns:
+
+## Project Structure
+
+The project is organized into modular Python files with clear separation of concerns:
