@@ -69,3 +69,33 @@ vision_agent/
 ├── io_utils.py              # load_image, get_boxes
 ├── grounded_sam.py          # detect, segment
 └── main.py                  # entry point for your application
+
+---
+
+## Project Workflow
+
+Below is a visual representation of how our image segmentation system works:
+
+```mermaid
+flowchart TD
+    A[User] -->|Uploads image & \nprovides object names| B[Input Processing]
+    B --> C[Object Detection \nusing Grounded DINO]
+    C -->|Detected boxes \n& labels| D[Object Segmentation \nusing SAM]
+    D -->|Segmentation masks| E{Visualization \nChoice}
+    E -->|Option 1| F[Annotated Outlines/Boxes]
+    E -->|Option 2| G[Mask-only Overlay]
+    F --> H[Result Display]
+    G --> H
+    H --> A
+    
+    classDef userAction fill:#d4f1f9,stroke:#05a,stroke-width:2px
+    classDef processing fill:#ffe6cc,stroke:#d79b00,stroke-width:1px
+    classDef models fill:#d5e8d4,stroke:#82b366,stroke-width:1px
+    classDef choice fill:#fff2cc,stroke:#d6b656,stroke-width:1px
+    classDef output fill:#f8cecc,stroke:#b85450,stroke-width:1px
+    
+    class A userAction
+    class B,H processing
+    class C,D models
+    class E choice
+    class F,G output
