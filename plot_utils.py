@@ -46,32 +46,33 @@ def plot_detections(
     plt.show()
 
 # Add plotly functions as needed
-def overlay_masks(image, detections, alpha=0.5):
+def overlay_masks(image, detections, alpha=0.5, outline_thickness=3):
     """
     Overlay segmentation masks on the image with random colors and transparency.
-    Each mask gets a unique color.
+    Draw a solid outline for each mask in the same color as the mask.
     """
     image = np.array(image).copy()
-    if image.max() > 1:
-        image = image.astype(np.uint8)
-    else:
+    if image.max() <= 1:
         image = (image * 255).astype(np.uint8)
-    mask_overlay = np.zeros_like(image)
-    rng = np.random.default_rng()  # Remove seed for true randomness
+    else:
+        image = image.astype(np.uint8)
+    overlay = image.copy()
+    rng = np.random.default_rng()  # True randomness
 
     for det in detections:
         mask = det.mask
         if mask is not None:
             # Generate a random color for this mask
-            color = rng.integers(0, 256, size=3, dtype=np.uint8)
-            # Create a colored mask
-            colored_mask = np.zeros_like(image)
-            for c in range(3):
-                colored_mask[:, :, c] = mask.astype(np.uint8) * color[c]
-            # Add to the overlay
-            mask_overlay = np.where(mask[..., None], colored_mask, mask_overlay)
+            color = rng.integers(0, 256, size=3).tolist()
 
-    # Blend the overlay with the original image
-    blended = cv2.addWeighted(image, 1 - alpha, mask_overlay, alpha, 0)
-    return blended
+            # Apply colored mask with transparency
+            mask_bool = mask.astype(bool)
+            overlay[mask_bool] = (alpha * np.array(color) + (1 - alpha) * overlay[mask_bool]).astype(np.uint8)
+
+            # Find contours and draw outline in the same color
+            mask_uint8 = (mask * 255).astype(np.uint8)
+            contours, _ = cv2.findContours(mask_uint8, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            cv2.drawContours(overlay, contours, -1, color, thickness=outline_thickness)
+
+    return overlay
 
