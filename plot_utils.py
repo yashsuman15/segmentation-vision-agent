@@ -49,6 +49,7 @@ def plot_detections(
 def overlay_masks(image, detections, alpha=0.5):
     """
     Overlay segmentation masks on the image with random colors and transparency.
+    Each mask gets a unique color.
     """
     image = np.array(image).copy()
     if image.max() > 1:
@@ -56,17 +57,21 @@ def overlay_masks(image, detections, alpha=0.5):
     else:
         image = (image * 255).astype(np.uint8)
     mask_overlay = np.zeros_like(image)
-    rng = np.random.default_rng(seed=42)  # For reproducibility; remove seed for random each time
+    rng = np.random.default_rng()  # Remove seed for true randomness
 
     for det in detections:
         mask = det.mask
         if mask is not None:
+            # Generate a random color for this mask
             color = rng.integers(0, 256, size=3, dtype=np.uint8)
+            # Create a colored mask
             colored_mask = np.zeros_like(image)
             for c in range(3):
-                colored_mask[:, :, c] = mask * color[c]
-            mask_overlay = cv2.add(mask_overlay, colored_mask)
-    # Blend original image and mask overlay
+                colored_mask[:, :, c] = mask.astype(np.uint8) * color[c]
+            # Add to the overlay
+            mask_overlay = np.where(mask[..., None], colored_mask, mask_overlay)
+
+    # Blend the overlay with the original image
     blended = cv2.addWeighted(image, 1 - alpha, mask_overlay, alpha, 0)
     return blended
 

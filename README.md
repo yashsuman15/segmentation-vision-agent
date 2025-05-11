@@ -63,17 +63,11 @@ This project provides a modular, extensible framework for vision-based object de
 
 seg-vision-agent/
 ├── __init__.py
-
 ├── data_structures.py       # BoundingBox, DetectionResult
-
 ├── plot_utils.py            # annotate, plot_detections, plot_detections_plotly, etc.
-
 ├── mask_utils.py            # mask_to_polygon, polygon_to_mask, refine_masks
-
 ├── io_utils.py              # load_image, get_boxes
-
 ├── grounded_sam.py          # detect, segment
-
 └── main.py                  # entry point for your application
 
 ---
