@@ -6,7 +6,7 @@ from PIL import Image
 import numpy as np
 import torch
 
-# Define a global cache to store results (for demo purposes; use proper state management in production)
+# Global cache (for demo purposes)
 result_cache = {}
 
 def inference(image, object_names):
@@ -43,8 +43,13 @@ def inference(image, object_names):
         "detections": detections
     })
     
-    # Return initial view (annotated image) and control visibility
-    return annotated_img, gr.Checkbox(visible=True), gr.Checkbox(visible=True)
+    # Return initial view and RESET TOGGLES TO UNCHECKED
+    return (
+        annotated_img, 
+        gr.Checkbox(value=False, visible=True),  # Mask toggle
+        gr.Checkbox(value=False, visible=True),  # Count toggle
+        gr.Textbox(value="", visible=False)      # Clear count output
+    )
 
 def toggle_mask(show_mask):
     if show_mask and "mask" in result_cache:
@@ -54,11 +59,8 @@ def toggle_mask(show_mask):
 def toggle_counts(show_counts):
     if show_counts and "counts" in result_cache:
         counts = result_cache["counts"]
-        count_str = "\n".join([f"{k}: {v}" for k, v in counts.items()]) if counts else "No objects detected"
-        return gr.update(value=count_str, visible=True)
-    else:
-        return gr.update(value="", visible=False)
-
+        return "\n".join([f"{k}: {v}" for k, v in counts.items()]) if counts else "No objects detected"
+    return ""
 
 with gr.Blocks() as demo:
     gr.Markdown("# Object Segmentation Analyzer")
@@ -94,7 +96,7 @@ with gr.Blocks() as demo:
         outputs=count_output
     )
 
-
 if __name__ == "__main__":
-    demo.launch(share=True)
+    demo.launch()
+
 
