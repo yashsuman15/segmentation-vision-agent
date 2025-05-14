@@ -43,12 +43,15 @@ def inference(image, object_names):
         "detections": detections
     })
     
+    # Initialize count text (empty for now)
+    count_text = ""
+    
     # Return initial view and RESET TOGGLES TO UNCHECKED
     return (
         annotated_img, 
         gr.Checkbox(value=False, visible=True),  # Mask toggle
         gr.Checkbox(value=False, visible=True),  # Count toggle
-        gr.Textbox(value="", visible=False)      # Clear count output
+        gr.Textbox(value=count_text, visible=True)  # Count output is now included
     )
 
 def toggle_mask(show_mask):
@@ -59,8 +62,9 @@ def toggle_mask(show_mask):
 def toggle_counts(show_counts):
     if show_counts and "counts" in result_cache:
         counts = result_cache["counts"]
-        return "\n".join([f"{k}: {v}" for k, v in counts.items()]) if counts else "No objects detected"
-    return ""
+        count_text = "\n".join([f"{k}: {v}" for k, v in counts.items()]) if counts else "No objects detected"
+        return gr.Textbox(value=count_text, visible=True)
+    return gr.Textbox(value="", visible=False)
 
 with gr.Blocks() as demo:
     gr.Markdown("# Object Segmentation Analyzer")
@@ -81,7 +85,7 @@ with gr.Blocks() as demo:
     submit_btn.click(
         fn=inference,
         inputs=[image_input, text_input],
-        outputs=[output_image, mask_toggle, count_toggle]
+        outputs=[output_image, mask_toggle, count_toggle, count_output]  # Added count_output
     )
     
     mask_toggle.change(
@@ -98,5 +102,3 @@ with gr.Blocks() as demo:
 
 if __name__ == "__main__":
     demo.launch()
-
-
